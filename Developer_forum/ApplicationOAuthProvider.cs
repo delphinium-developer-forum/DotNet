@@ -20,21 +20,21 @@ namespace Developer_forum
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
-            var manager = new UserManager<ApplicationUser>(userStore);
-            var user = await manager.FindAsync(context.UserName, context.Password);
-            if (user != null)
-            {
-                var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                identity.AddClaim(new Claim("Username", user.UserName));
-                identity.AddClaim(new Claim("Email", user.Email));
-                identity.AddClaim(new Claim("Name", user.name));
-                identity.AddClaim(new Claim("ImageUrl", user.imageUrl));
-                identity.AddClaim(new Claim("LoggedOn", DateTime.Now.ToString()));
-                context.Validated(identity);
-            }
-            else
-                return;
+            //var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
+            //var manager = new UserManager<ApplicationUser>(userStore);
+            //var user = await manager.FindAsync(context.UserName, context.Password);
+            //if (user != null)
+            //{
+            //    var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+            //    identity.AddClaim(new Claim("Username", user.UserName));
+            //    identity.AddClaim(new Claim("Email", user.Email));
+            //    identity.AddClaim(new Claim("Name", user.name));
+            //    identity.AddClaim(new Claim("ImageUrl", user.imageUrl));
+            //    identity.AddClaim(new Claim("LoggedOn", DateTime.Now.ToString()));
+            //    context.Validated(identity);
+            //}
+            //else
+            //    return;
         }
     }
 }

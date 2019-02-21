@@ -21,8 +21,8 @@ namespace Developer_forum.Controllers
             var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
             var manager = new UserManager<ApplicationUser>(userStore);
             var user = new ApplicationUser() { UserName = model.UserName, Email = model.Email };
-            user.name = model.FirstName;
-  //          user.imageUrl = model.LastName;
+            user.name = model.name;
+            user.imageUrl = model.imageUrl;
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 3
@@ -34,22 +34,22 @@ namespace Developer_forum.Controllers
 
 
 
-        [HttpGet]
-        [Authorize]
-        [Route("api/GetUserClaims")]
-        public AccountModel GetUserClaims()
-        {
-            var identityClaims = (ClaimsIdentity)User.Identity;
-            IEnumerable<Claim> claims = identityClaims.Claims;
-            AccountModel model = new AccountModel()
-            {
-                UserName = identityClaims.FindFirst("Username").Value,
-                Email = identityClaims.FindFirst("Email").Value,
-                FirstName = identityClaims.FindFirst("FirstName").Value,
-                LastName = identityClaims.FindFirst("LastName").Value,
-                LoggedOn = identityClaims.FindFirst("LoggedOn").Value
-            };
-            return model;
-        }
+        //[HttpGet]
+        //[Authorize]
+        //[Route("api/GetUserClaims")]
+        //public AccountModel GetUserClaims()
+        //{
+        //    var identityClaims = (ClaimsIdentity)User.Identity;
+        //    IEnumerable<Claim> claims = identityClaims.Claims;
+        //    AccountModel model = new AccountModel()
+        //    {
+        //        UserName = identityClaims.FindFirst("Username").Value,
+        //        Email = identityClaims.FindFirst("Email").Value,
+        //        name = identityClaims.FindFirst("name").Value,
+        //        imageUrl = identityClaims.FindFirst("imageUrl").Value,
+        //        LoggedOn = identityClaims.FindFirst("LoggedOn").Value
+        //    };
+        //    return model;
+        //}
     }
 }
