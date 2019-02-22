@@ -44,16 +44,7 @@ namespace Developer_forum.Controllers.api
             return Ok(question);
         }
 
-        //[HttpGet]
-        //[Route("api/Answers/GetAnswers")]
-        //public IEnumerable<Answer> GetAnswers()
-        //{
-        //   //return dbContext.Answers.Include(a => a.question)
-        //           var answer=dbContext.
-                    
-        //}
 
-        
         [HttpGet]
         [ResponseType(typeof(Question))]
         [Route("api/Question/GetQuestions")]
@@ -62,12 +53,28 @@ namespace Developer_forum.Controllers.api
 
             var data = dbContext.Questions.AsEnumerable()
                         .Join(dbContext.Users.AsEnumerable(),
-                        ques => ques.Id, u => u.Id,(ques,u)=>new UserQuestion() {
-                        quesId = ques.quesId, question = ques.question,
-                        activityDate = ques.activityDate, userId = u.Id, userName = u.name
+                        ques => ques.Id, u => u.Id, (ques, u) => new UserQuestion()
+                        {
+                            quesId = ques.quesId,
+                            question = ques.question,
+                            activityDate = ques.activityDate,
+                            userId = u.Id,
+                            userName = u.name
                         });
             return data;
         }
+
+
+        //[HttpGet]
+        //[Route("api/Answers/GetAnswers")]
+        //public IEnumerable<Answer> GetAnswers()
+        //{
+        //   //return dbContext.Answers.Include(a => a.question)
+        //           var answer=dbContext.
+
+        //}
+
+
 
 
 
