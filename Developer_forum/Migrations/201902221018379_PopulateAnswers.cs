@@ -42,5 +42,6 @@ namespace Developer_forum.Migrations
             Sql("delete from Answers where ansId=15");
             Sql("delete from Answers where ansId=2");
         }
+
     }
 }

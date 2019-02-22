@@ -16,11 +16,11 @@ namespace Developer_forum.Models
     }
 
 
-    public class allAnswers {
+    //public class allAnswers {
 
-        public int ansId { get; set; }
-        public string answer { get; set; }
-       public int votes { get; set; }
-        public string Id { get; set; }
-    }
+    //    public int ansId { get; set; }
+    //    public string answer { get; set; }
+    //   public int votes { get; set; }
+    //    public string Id { get; set; }
+    //}
 }

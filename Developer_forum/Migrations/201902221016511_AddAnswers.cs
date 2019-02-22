@@ -3,7 +3,7 @@ namespace Developer_forum.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddAnswer : DbMigration
+    public partial class AddAnswers : DbMigration
     {
         public override void Up()
         {
@@ -11,13 +11,13 @@ namespace Developer_forum.Migrations
                 "dbo.Answers",
                 c => new
                     {
-                        Id = c.String(nullable: false, maxLength: 128),
-                        quesId = c.Int(nullable: false),
                         ansId = c.Int(nullable: false, identity: true),
+                        Id = c.String(maxLength: 128),
+                        quesId = c.Int(nullable: false),
                         answer = c.String(nullable: false),
                     })
-                .PrimaryKey(t => new { t.Id, t.quesId })
-                .ForeignKey("dbo.User", t => t.Id, cascadeDelete: true)
+                .PrimaryKey(t => t.ansId)
+                .ForeignKey("dbo.User", t => t.Id)
                 .ForeignKey("dbo.Questions", t => t.quesId, cascadeDelete: true)
                 .Index(t => t.Id)
                 .Index(t => t.quesId);

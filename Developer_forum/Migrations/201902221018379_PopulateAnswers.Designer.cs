@@ -6,14 +6,14 @@ namespace Developer_forum.Migrations
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
     
-    [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
+    [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
     public sealed partial class PopulateAnswers : IMigrationMetadata
     {
         private readonly ResourceManager Resources = new ResourceManager(typeof(PopulateAnswers));
         
         string IMigrationMetadata.Id
         {
-            get { return "201902210713206_PopulateAnswers"; }
+            get { return "201902221018379_PopulateAnswers"; }
         }
         
         string IMigrationMetadata.Source

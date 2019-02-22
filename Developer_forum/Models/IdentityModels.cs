@@ -31,6 +31,8 @@ namespace Developer_forum.Models
     {
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        //public DbSet<UserQuestionAnswerMapper> UserQuestionAnswerMappers { get; set; }
+        public DbSet<Vote> Votes { get; set; }
        
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

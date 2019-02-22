@@ -229,13 +229,21 @@
     <Compile Include="Migrations\201902210535156_PopulateQuestions1.Designer.cs">
       <DependentUpon>201902210535156_PopulateQuestions1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902210707258_AddAnswer.cs" />
-    <Compile Include="Migrations\201902210707258_AddAnswer.Designer.cs">
-      <DependentUpon>201902210707258_AddAnswer.cs</DependentUpon>
+    <Compile Include="Migrations\201902221016511_AddAnswers.cs" />
+    <Compile Include="Migrations\201902221016511_AddAnswers.Designer.cs">
+      <DependentUpon>201902221016511_AddAnswers.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902210713206_PopulateAnswers.cs" />
-    <Compile Include="Migrations\201902210713206_PopulateAnswers.Designer.cs">
-      <DependentUpon>201902210713206_PopulateAnswers.cs</DependentUpon>
+    <Compile Include="Migrations\201902221018379_PopulateAnswers.cs" />
+    <Compile Include="Migrations\201902221018379_PopulateAnswers.Designer.cs">
+      <DependentUpon>201902221018379_PopulateAnswers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902221135005_Addvotes.cs" />
+    <Compile Include="Migrations\201902221135005_Addvotes.Designer.cs">
+      <DependentUpon>201902221135005_Addvotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902221138049_PopulateVotes.cs" />
+    <Compile Include="Migrations\201902221138049_PopulateVotes.Designer.cs">
+      <DependentUpon>201902221138049_PopulateVotes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModel.cs" />
@@ -243,6 +251,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\ViewModel.cs" />
+    <Compile Include="Models\Vote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup1.cs" />
   </ItemGroup>
@@ -364,11 +373,17 @@
     <EmbeddedResource Include="Migrations\201902210535156_PopulateQuestions1.resx">
       <DependentUpon>201902210535156_PopulateQuestions1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902210707258_AddAnswer.resx">
-      <DependentUpon>201902210707258_AddAnswer.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902221016511_AddAnswers.resx">
+      <DependentUpon>201902221016511_AddAnswers.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902210713206_PopulateAnswers.resx">
-      <DependentUpon>201902210713206_PopulateAnswers.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902221018379_PopulateAnswers.resx">
+      <DependentUpon>201902221018379_PopulateAnswers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902221135005_Addvotes.resx">
+      <DependentUpon>201902221135005_Addvotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902221138049_PopulateVotes.resx">
+      <DependentUpon>201902221138049_PopulateVotes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -7,22 +7,17 @@ using System.Web;
 
 namespace Developer_forum.Models
 {
-    public class Answer
+    public class Vote
     {
+
         public ApplicationUser applicationUser { get; set; } //foreign key for userid
-        [ForeignKey("applicationUser")]
+        [Key, Column(Order = 0), ForeignKey("applicationUser")]
         [MaxLength(128)]
         public string Id { get; set; }
-
-        public Question question { get; set; }
-        [ForeignKey("question")]
-        public int quesId { get; set; }
-
-        [Key]
+        public Answer answer { get; set; }
+        [Key, Column(Order = 1),ForeignKey("answer")]
         public int ansId { get; set; }
-
-        [Required]
-        [MinLength(10)]
-        public string answer { get; set; }
+        [Range(-1,1)]
+        public int votes { get; set; }
     }
 }
