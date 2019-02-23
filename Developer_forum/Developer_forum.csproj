@@ -249,6 +249,10 @@
     <Compile Include="Migrations\201902221309465_UpdateVotesData.Designer.cs">
       <DependentUpon>201902221309465_UpdateVotesData.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902230610206_populate answer again.cs" />
+    <Compile Include="Migrations\201902230610206_populate answer again.Designer.cs">
+      <DependentUpon>201902230610206_populate answer again.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\Answer.cs" />
@@ -391,6 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902221309465_UpdateVotesData.resx">
       <DependentUpon>201902221309465_UpdateVotesData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902230610206_populate answer again.resx">
+      <DependentUpon>201902230610206_populate answer again.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

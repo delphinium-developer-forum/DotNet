@@ -17,6 +17,9 @@ namespace Developer_forum.Models
         public Answer answer { get; set; }
         [Key, Column(Order = 1),ForeignKey("answer")]
         public int ansId { get; set; }
+
+        
+
         [Range(-1,1)]
         public int votes { get; set; }
     }
