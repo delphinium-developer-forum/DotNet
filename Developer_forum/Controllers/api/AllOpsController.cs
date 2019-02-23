@@ -124,45 +124,6 @@ namespace Developer_forum.Controllers.api
             return final;
         }
 
-
-
-
-
-
-
-
-
-        [HttpGet]
-        [Route("api/Answers/fun/{id}")]
-        public Object fun(int id)
-        {
-           ////lis of answer having same quesid
-           // var myInClause = dbContext.Answers.Where(c=>c.quesId==id).Select(c=>c.ansId);
-           // //list contains votes of those answers
-           // var results = from x in dbContext.Votes
-           //               where myInClause.Contains(x.ansId)
-           //               select x;
-
-            //shortcut for above code
-            //selecting votes of answers for particular question 
-            var re = dbContext.Answers.AsEnumerable().Where(c => c.quesId == id)
-                        .Join(dbContext.Votes.AsEnumerable(),
-                        c => c.ansId, v => v.ansId, (c, v) => new
-                        { v.votes,
-                        v.ansId
-            
-                        });
-            //adding votes of same answer by different users
-            var result = re.GroupBy(x => x.ansId, (key, values) => new
-            {ansid=key,
-            totalVotes=values.Sum(x=>x.votes)
-            });
-           
-            
-            return result;
-        }
-
-
-
+        
     }
 }
