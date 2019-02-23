@@ -23,31 +23,6 @@ namespace Developer_forum.Controllers.api
             dbContext = new ApplicationDbContext();
         }
 
-
-        //not useful atm
-        //Handle Get Request for questions with particular quesId
-        //[HttpGet]
-        //[ResponseType(typeof(Question))]
-        //[Route("api/Questions/GetQuestions/{id}")]
-        //public IHttpActionResult GetQuestions(int id)
-        //{
-        //    var question = dbContext.Questions.AsEnumerable().Where(q=>q.quesId==id)
-        //                          .Join(dbContext.Users.AsEnumerable(),
-        //                           ques => ques.Id, u => u.Id, (ques, u) => new UserQuestion()
-        //                              {
-        //                                   quesId = id,
-        //                                   question = ques.question,
-        //                                   activityDate = ques.activityDate,
-        //                                   userId = u.Id,
-        //                                   userName = u.name
-        //                              });
-        //    if (question == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(question);
-        //}
-
         //Handle Get Request for all questions
         [HttpGet]
         [ResponseType(typeof(Question))]
@@ -72,8 +47,8 @@ namespace Developer_forum.Controllers.api
         [Route("api/Answers/GetAnswers/{id}")]
         public Object GetAnswers(int id)
         {
-          
-        
+
+            //selecting answers for particular question in answer table and get details from user table also
             var an = dbContext.Answers.AsEnumerable()
                         .Where(ans => ans.quesId == id)
                         .Join(dbContext.Users.AsEnumerable(),
@@ -124,6 +99,55 @@ namespace Developer_forum.Controllers.api
             return final;
         }
 
-        
+        //get for update particular answer
+        [HttpGet]
+        [Route("api/Answers/UpdateAnswers/{qid}/{aid}")]
+        public Object UpdateAnswer(int qid,int aid)
+        {
+
+            //selecting answers for particular question in answer table
+            var an = dbContext.Answers.AsEnumerable()
+                        .Where(ans => ans.quesId == qid)
+                        .Join(dbContext.Users.AsEnumerable(),
+                       ans => ans.Id, u => u.Id, (ans, u) => new allAnswers()
+                       {
+                           ansId = ans.ansId,
+                           answer = ans.answer,
+                           userName = u.name
+                       });
+
+ ////selecting votes of answers for particular question 
+ //           var re = dbContext.Answers.AsEnumerable().Where(c => c.quesId == qid)
+ //                       .Join(dbContext.Votes.AsEnumerable(),
+ //                       c => c.ansId, v => v.ansId, (c, v) => new
+ //                       {
+ //                           v.votes,
+ //                           v.ansId
+
+ //                       });
+            //adding votes of a particular answer(having ansId=aid) by different users
+            var result = dbContext.Votes.Where(ans=>ans.ansId==aid).GroupBy(x => x.ansId, (key, values) => new
+            {
+                ansid = key,
+                totalVotes = values.Sum(x => x.votes)
+            });
+            //ADD VOTES TO 'an' OBJECT :'an' has all answer details
+
+            var final = an.AsEnumerable().Where(ans=>ans.ansId==aid)
+                        .Join(result.AsEnumerable(),
+                       ans => ans.ansId, v => v.ansid, (ans, v) => new allAnswers()
+                       {
+                           ansId = ans.ansId,
+                           answer = ans.answer,
+                           userName = ans.userName,
+                           votes = v.totalVotes
+
+                       });
+
+            return final;
+        }
+
+
+
     }
 }
