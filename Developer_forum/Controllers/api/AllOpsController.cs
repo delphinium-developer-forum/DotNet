@@ -144,13 +144,13 @@ namespace Developer_forum.Controllers.api
         //upload answer and update answer
         [HttpPost]
         [Route("api/Answers/UploadAnswers")]
-        public IHttpActionResult UploadAnswers(Answer answer) {
+        public IHttpActionResult UploadAnswers( Answer answer) {
 
             try
             {
                 var verify = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
                 if (verify == null)
-                {
+                {  //if answer does not exists
                     dbContext.Answers.Add(answer);
                     dbContext.SaveChanges();
                     var var2 = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
@@ -160,7 +160,7 @@ namespace Developer_forum.Controllers.api
                     return Ok("answer uploaded");
                 }
                 else
-                {
+                { //if answer exists
                     verify.answer = answer.answer;
 
                     dbContext.SaveChanges();
