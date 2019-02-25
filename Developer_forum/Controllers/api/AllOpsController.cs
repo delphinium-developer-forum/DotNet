@@ -144,7 +144,7 @@ namespace Developer_forum.Controllers.api
         //upload answer and update answer
         [HttpPost]
         [Route("api/Answers/UploadAnswers")]
-        public IHttpActionResult UploadAnswers( Answer answer) {
+        public IHttpActionResult UploadAnswers( [FromBody]Answer answer) {
 
             try
             {
@@ -166,12 +166,13 @@ namespace Developer_forum.Controllers.api
                     dbContext.SaveChanges();
                     return Ok("your answer is updated");
                 }
-            }
+          }
             catch (System.Reflection.TargetException e)
             {
                 return BadRequest(e.Message);
             }
-            catch (System.Data.Entity.Infrastructure.DbUpdateException e) {
+            catch (System.Data.Entity.Infrastructure.DbUpdateException e)
+            {
                 return BadRequest(e.Message);
             }
         }
