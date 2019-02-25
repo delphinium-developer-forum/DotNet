@@ -178,6 +178,58 @@ namespace Developer_forum.Controllers.api
 
 
 
+        [HttpPost]
+        [Route("api/Votes/UploadVotes")]
+        public IHttpActionResult UploadVotes(Vote vote)
+        {
+            var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).SingleOrDefault();
+            if (votesUser == null)
+            {
+                dbContext.Votes.Add(vote);
+                dbContext.SaveChanges();
+                return Ok("your vote is uploaded");
+            }
+            else
+            {
+                if (votesUser.Id == "dummy")
+                {
+                    votesUser.Id = vote.Id;
+                    votesUser.votes = vote.votes;
+                    dbContext.SaveChanges();
+                    return Ok("first vote is uploaded");
+                }
+                else
+                {
+                    dbContext.Votes.Add(vote);
+                    dbContext.SaveChanges();
+                    return Ok("your vote is uploaded");
+                }
+            }
+        }
+
+
+        [HttpPost]
+        [Route("api/Questions/UploadQuestions")]
+        public HttpResponseMessage Post([FromBody] Question question)
+        {
+            try
+            {
+                using (var entities = new ApplicationDbContext())
+                {
+                    entities.Questions.Add(question);
+                    entities.SaveChanges();
+
+                    var message = Request.CreateResponse(HttpStatusCode.Created, question);
+                    message.Headers.Location = new Uri(Request.RequestUri + question.Id.ToString());
+                    return message;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
 
     }
