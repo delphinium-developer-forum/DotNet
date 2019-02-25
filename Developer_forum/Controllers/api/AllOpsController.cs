@@ -208,6 +208,29 @@ namespace Developer_forum.Controllers.api
         }
 
 
+        [HttpPost]
+        [Route("api/Questions/UploadQuestions")]
+        public HttpResponseMessage Post([FromBody] Question question)
+        {
+            try
+            {
+                using (var entities = new ApplicationDbContext())
+                {
+                    entities.Questions.Add(question);
+                    entities.SaveChanges();
+
+                    var message = Request.CreateResponse(HttpStatusCode.Created, question);
+                    message.Headers.Location = new Uri(Request.RequestUri + question.Id.ToString());
+                    return message;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
 
     }
 }
