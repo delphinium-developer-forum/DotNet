@@ -166,13 +166,17 @@ namespace Developer_forum.Controllers.api
                     dbContext.SaveChanges();
                     return Ok("your answer is updated");
                 }
-          }
+            }
             catch (System.Reflection.TargetException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(e.Message + e.Data);
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException e)
             {
+                return BadRequest(e.Message);
+            }
+            // if user voilates fk contraint
+            catch (System.Data.Entity.Validation.DbEntityValidationException e) {
                 return BadRequest(e.Message);
             }
         }
@@ -183,28 +187,46 @@ namespace Developer_forum.Controllers.api
         [Route("api/Votes/UploadVotes")]
         public IHttpActionResult UploadVotes(Vote vote)
         {
-            var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).SingleOrDefault();
-            if (votesUser == null)
+            try
             {
-                dbContext.Votes.Add(vote);
-                dbContext.SaveChanges();
-                return Ok("your vote is uploaded");
-            }
-            else
-            {
-                if (votesUser.Id == "dummy")
-                {
-                    votesUser.Id = vote.Id;
-                    votesUser.votes = vote.votes;
-                    dbContext.SaveChanges();
-                    return Ok("first vote is uploaded");
-                }
-                else
-                {
-                    dbContext.Votes.Add(vote);
+                var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).SingleOrDefault();
+           
+            
+                    if (votesUser.Id == "dummy")
+                    {
+                        votesUser.Id = vote.Id;
+                        votesUser.votes = vote.votes;
+                        dbContext.SaveChanges();
+                        return Ok("first vote is uploaded");
+                    }
+                    else 
+                    {
+                        var existUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).Where(u=>u.Id==vote.Id).SingleOrDefault();
+                        if (existUser == null)
+                        {
+                        dbContext.Votes.Add(vote);
+                       
+                        }
+                        else
+                         {
+
+                            if (existUser.votes != vote.votes)
+                            {
+
+                            votesUser.votes = 0;
+                            
+                            }
+                        
+                         }
                     dbContext.SaveChanges();
                     return Ok("your vote is uploaded");
+                    }
                 }
+           
+            catch (NullReferenceException e) {
+
+                return BadRequest(e.Message);
+
             }
         }
 
@@ -231,6 +253,35 @@ namespace Developer_forum.Controllers.api
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+
+
+        [HttpPut]
+        [Route("api/Votes/ChangeVotes")]
+        public IHttpActionResult ChangeVotes(Vote vote)
+        {
+            try
+            {
+                var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).Where(v=>v.Id==vote.Id).SingleOrDefault();
+
+                if (votesUser.votes != vote.votes) {
+
+                    votesUser.votes = 0;
+                    dbContext.SaveChanges();
+                }
+                return Ok("votes changed");
+            }
+
+            catch (NullReferenceException e)
+            {
+
+                return BadRequest(e.Message);
+
+            }
+        }
+
+
+
+
 
 
     }
