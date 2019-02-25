@@ -45,7 +45,7 @@ namespace Developer_forum.Controllers.api
       //  Handle Get Request for all answers
         [HttpGet]
         [Route("api/Answers/GetAnswers/{id}")]
-        public Object GetAnswers(int id)
+        public IEnumerable<allAnswers> GetAnswers(int id)
         {
 
             //selecting answers for particular question in answer table and get details from user table also
@@ -66,6 +66,8 @@ namespace Developer_forum.Controllers.api
             // var results = from x in dbContext.Votes
             //               where myInClause.Contains(x.ansId)
             //               select x;
+            
+
 
             //shortcut for above code
             //selecting votes of answers for particular question 
@@ -102,7 +104,7 @@ namespace Developer_forum.Controllers.api
         //get for update particular answer
         [HttpGet]
         [Route("api/Answers/UpdateAnswers/{qid}/{aid}")]
-        public Object UpdateAnswer(int qid,int aid)
+        public IEnumerable<allAnswers> UpdateAnswer(int qid,int aid)
         {
 
             //selecting answers for particular question in answer table
@@ -116,15 +118,7 @@ namespace Developer_forum.Controllers.api
                            userName = u.name
                        });
 
- ////selecting votes of answers for particular question 
- //           var re = dbContext.Answers.AsEnumerable().Where(c => c.quesId == qid)
- //                       .Join(dbContext.Votes.AsEnumerable(),
- //                       c => c.ansId, v => v.ansId, (c, v) => new
- //                       {
- //                           v.votes,
- //                           v.ansId
-
- //                       });
+            
             //adding votes of a particular answer(having ansId=aid) by different users
             var result = dbContext.Votes.Where(ans=>ans.ansId==aid).GroupBy(x => x.ansId, (key, values) => new
             {
@@ -146,6 +140,43 @@ namespace Developer_forum.Controllers.api
 
             return final;
         }
+
+        //upload answer and update answer
+        [HttpPost]
+        [Route("api/Answers/UploadAnswers")]
+        public IHttpActionResult UploadAnswers(Answer answer) {
+
+            try
+            {
+                var verify = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
+                if (verify == null)
+                {
+                    dbContext.Answers.Add(answer);
+                    dbContext.SaveChanges();
+                    var var2 = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
+                    Vote v = new Vote() { ansId = var2.ansId, votes = 0, Id = "dummy" };
+                    dbContext.Votes.Add(v);
+                    dbContext.SaveChanges();
+                    return Ok("answer uploaded");
+                }
+                else
+                {
+                    verify.answer = answer.answer;
+
+                    dbContext.SaveChanges();
+                    return Ok("your answer is updated");
+                }
+            }
+            catch (System.Reflection.TargetException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (System.Data.Entity.Infrastructure.DbUpdateException e) {
+                return BadRequest(e.Message);
+            }
+        }
+
+
 
 
 
