@@ -9,6 +9,8 @@ using System.Web.Http.Description;
 using System.Web.Http.Cors;
 using System.Data.Entity;
 using System.Security.Claims;
+using System.Web;
+using System.IO;
 
 namespace Developer_forum.Controllers.api
 {
@@ -326,7 +328,39 @@ namespace Developer_forum.Controllers.api
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-        
+
+        [HttpPost]
+        [Route("api/UploadImage/{id}")]
+
+        public Object UploadImage(string id)
+        {
+            string imageName = null;
+            var httpRequest = HttpContext.Current.Request;
+            //Upload Image
+            var postedFile = httpRequest.Files["Image"];
+            //Create custom filename
+            imageName = new String(Path.GetFileNameWithoutExtension(postedFile.FileName).Take(10).ToArray()).Replace(" ", "-");
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(postedFile.FileName);
+            var filePath = HttpContext.Current.Server.MapPath("~/Image/" + imageName);
+            postedFile.SaveAs(filePath);
+
+            var validUser = dbContext.Users.Where(c => c.Id == id).SingleOrDefault();
+            if (validUser == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                validUser.imageUrl = "Image/" + imageName;
+                dbContext.SaveChanges();
+                SuccessStatus s = new SuccessStatus();
+                s.status = "Success";
+                s.data = new List<string>() { "Url: "+validUser.imageUrl,
+                                              "Message: image uploaded successfully"};
+                return s;
+            }
+        }
+
 
     }
 }
