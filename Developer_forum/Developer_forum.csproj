@@ -269,6 +269,7 @@
     <Compile Include="Models\Answer.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\SuccessStatus.cs" />
     <Compile Include="Models\ViewModel.cs" />
     <Compile Include="Models\Vote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,6 +29,7 @@ namespace Developer_forum.Controllers.api
         [Route("api/Questions/GetQuestions")]
         public IEnumerable<UserQuestion> GetQuestions()
         {
+            
             var data = dbContext.Questions.AsEnumerable()
                         .Join(dbContext.Users.AsEnumerable(),
                         ques => ques.Id, u => u.Id, (ques, u) => new UserQuestion()
