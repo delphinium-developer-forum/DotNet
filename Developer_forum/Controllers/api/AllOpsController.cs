@@ -26,8 +26,8 @@ namespace Developer_forum.Controllers.api
         //Handle Get Request for all questions
         [HttpGet]
         [ResponseType(typeof(Question))]
-        [Route("api/Questions/GetQuestions")]
-        public IEnumerable<UserQuestion> GetQuestions()
+        [Route("api/Questions/GetQuestions/{pageNumber}")]
+        public IEnumerable<UserQuestion> GetQuestions(int pageNumber)
         {
             
             var data = dbContext.Questions.AsEnumerable()
@@ -40,13 +40,17 @@ namespace Developer_forum.Controllers.api
                             userId = u.Id,
                             userName = u.name
                         }).OrderByDescending(c=>c.activityDate);
-            return data;
+            var pageSize = 10;
+
+            var pageData = data.Skip(pageSize * (pageNumber-1)).Take(pageSize);
+
+            return pageData;
         }
 
       //  Handle Get Request for all answers
         [HttpGet]
-        [Route("api/Answers/GetAnswers/{id}")]
-        public IEnumerable<allAnswers> GetAnswers(int id)
+        [Route("api/Answers/GetAnswers/{id}/{pageNumber}")]
+        public IEnumerable<allAnswers> GetAnswers(int id,int pageNumber)
         {
 
             //selecting answers for particular question in answer table and get details from user table also
@@ -99,7 +103,13 @@ namespace Developer_forum.Controllers.api
 
                        });
 
-            return final;
+
+
+            var pageSize = 10;
+
+            var pageData = final.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+            return pageData;
         }
 
         //get for update particular answer
