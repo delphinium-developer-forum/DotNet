@@ -11,7 +11,8 @@ namespace Developer_forum.Models
         public string status { get; set; }
         public Object data { get; set; }
         public records records { get; set; }
-        public filters filters { get; set; }
+        public IEnumerable<filters> filters { get; set; }//becoz we can have filter on multiple filters 
+        // we can add filter col inside filter list while applying filters inside controller
         public search search { get; set; }
         public sort sort { get; set; }
     }
