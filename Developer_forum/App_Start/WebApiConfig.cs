@@ -33,7 +33,7 @@ namespace Developer_forum
             config.Routes.MapHttpRoute(
                        name: "CatchAllRoute",
                        routeTemplate: "{*catchall}",
-                       defaults: new { controller = "AllOps", action = "fun", id = RouteParameter.Optional }
+                       defaults: new { controller = "Handling404", action = "error404", id = RouteParameter.Optional }
                        );
          
 
