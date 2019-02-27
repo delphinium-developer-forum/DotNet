@@ -29,7 +29,7 @@ namespace Developer_forum.Controllers.api
         [HttpGet]
         [ResponseType(typeof(Question))]
         [Route("api/Questions/GetQuestions/{pageNumber}")]
-        public IEnumerable<UserQuestion> GetQuestions(int pageNumber)
+        public Object GetQuestions(int pageNumber)
         {
             
             var data = dbContext.Questions.AsEnumerable()
@@ -46,13 +46,27 @@ namespace Developer_forum.Controllers.api
 
             var pageData = data.Skip(pageSize * (pageNumber-1)).Take(pageSize);
 
-            return pageData;
+            SuccessStatus s = new SuccessStatus();
+            s.status = "success";
+            s.data = pageData;
+            s.records = new records() {
+                pageNo = pageNumber,
+                returned = pageData.Count(),
+                total = data.Count()
+            };
+            
+            s.sort = new sort() {field="ActivityDate",
+                order="Desc"
+                };
+            
+
+            return s;
         }
 
       //  Handle Get Request for all answers
         [HttpGet]
         [Route("api/Answers/GetAnswers/{id}/{pageNumber}")]
-        public IEnumerable<allAnswers> GetAnswers(int id,int pageNumber)
+        public Object GetAnswers(int id,int pageNumber)
         {
 
             //selecting answers for particular question in answer table and get details from user table also
@@ -103,7 +117,7 @@ namespace Developer_forum.Controllers.api
                            userName = ans.userName,
                            votes=v.totalVotes
 
-                       });
+                       }).OrderByDescending(c=>c.votes);
 
 
 
@@ -111,13 +125,36 @@ namespace Developer_forum.Controllers.api
 
             var pageData = final.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
 
-            return pageData;
+
+
+            SuccessStatus s = new SuccessStatus();
+            s.status = "success";
+            s.data = pageData;
+            s.records = new records()
+            {
+                pageNo = pageNumber,
+                returned = pageData.Count(),
+                total = final.Count()
+            };
+
+            s.sort = new sort()
+            {
+                field = "votes",
+                order = "Desc"
+            };
+
+
+
+
+
+
+            return s;
         }
 
         //get for update particular answer
         [HttpGet]
         [Route("api/Answers/UpdateAnswers/{qid}/{aid}")]
-        public IEnumerable<allAnswers> UpdateAnswer(int qid,int aid)
+        public Object UpdateAnswer(int qid,int aid)
         {
 
             //selecting answers for particular question in answer table
@@ -151,17 +188,29 @@ namespace Developer_forum.Controllers.api
 
                        });
 
-            return final;
+            
+
+
+            SuccessStatus s = new SuccessStatus();
+            s.status = "success";
+            s.data = final;
+
+            return s;
+            
         }
 
         //upload answer and update answer
         [HttpPost]
         [Route("api/Answers/UploadAnswers")]
-        public IHttpActionResult UploadAnswers( [FromBody]Answer answer) {
+        public Object UploadAnswers( [FromBody]Answer answer) {
 
             try
             {
                 var verify = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
+
+                SuccessStatus s = new SuccessStatus();
+                s.status = "success";
+
                 if (verify == null)
                 {  //if answer does not exists
                     dbContext.Answers.Add(answer);
@@ -170,14 +219,17 @@ namespace Developer_forum.Controllers.api
                     Vote v = new Vote() { ansId = var2.ansId, votes = 0, Id = "dummy" };
                     dbContext.Votes.Add(v);
                     dbContext.SaveChanges();
-                    return Ok("answer uploaded");
+                    s.data = var2;
+                    return s;
+                    
                 }
                 else
                 { //if answer exists
                     verify.answer = answer.answer;
-
                     dbContext.SaveChanges();
-                    return Ok("your answer is updated");
+                    var var2 = dbContext.Answers.Where(c => c.quesId == answer.quesId).Where(c => c.Id == answer.Id).SingleOrDefault();
+                    s.data = var2;
+                    return s;
                 }
             }
             catch (System.Reflection.TargetException e)
@@ -198,19 +250,21 @@ namespace Developer_forum.Controllers.api
 
         [HttpPost]
         [Route("api/Votes/UploadVotes")]
-        public IHttpActionResult UploadVotes(Vote vote)
+        public Object UploadVotes(Vote vote)
         {
             try
             {
                 var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).SingleOrDefault();
-           
-            
+
+                SuccessStatus s = new SuccessStatus();
+                s.status = "success";
                     if (votesUser.Id == "dummy")
                     {
                         votesUser.Id = vote.Id;
                         votesUser.votes = vote.votes;
                         dbContext.SaveChanges();
-                        return Ok("first vote is uploaded");
+
+                    s.data = votesUser;
                     }
                     else 
                     {
@@ -218,7 +272,7 @@ namespace Developer_forum.Controllers.api
                         if (existUser == null)
                         {
                         dbContext.Votes.Add(vote);
-                       
+                        s.data = vote;
                         }
                         else
                          {
@@ -226,16 +280,17 @@ namespace Developer_forum.Controllers.api
                             if (existUser.votes != vote.votes)
                             {
 
-                            votesUser.votes = 0;
+                            existUser.votes = 0;
                             
                             }
                         
                          }
                     dbContext.SaveChanges();
-                    return Ok("your vote is uploaded");
+                    s.data = existUser;
                     }
-                }
-           
+                return s;
+            }
+
             catch (NullReferenceException e) {
 
                 return BadRequest(e.Message);
@@ -246,19 +301,26 @@ namespace Developer_forum.Controllers.api
 
         [HttpPost]
         [Route("api/Questions/UploadQuestions")]
-        public HttpResponseMessage Post([FromBody] Question question)
+        public Object Post([FromBody] Question question)
         {
             try
             {
-                using (var entities = new ApplicationDbContext())
+                using (var entities = new ApplicationDbContext())// to define scope of dbContext object
                 {
                     entities.Questions.Add(question);
                     entities.SaveChanges();
 
-                    var message = Request.CreateResponse(HttpStatusCode.Created, question);
-                    message.Headers.Location = new Uri(Request.RequestUri + question.Id.ToString());
-                    return message;
+                    //// sending message to particular location
+                    //var message = Request.CreateResponse(HttpStatusCode.Created, question);
+                    //message.Headers.Location = new Uri(Request.RequestUri + question.Id.ToString());
+                    //return message;
+                    SuccessStatus s = new SuccessStatus();
+                    s.status = "Success";
+                    /*becoz question id will be automatically attached to this question.quesId
+                      after the record is inserted to db using SaveChanges*/
+                    s.data = question;
 
+                    return s;
                 }
             }
             catch (Exception ex)
@@ -267,34 +329,10 @@ namespace Developer_forum.Controllers.api
             }
         }
 
-
-        [HttpPut]
-        [Route("api/Votes/ChangeVotes")]
-        public IHttpActionResult ChangeVotes(Vote vote)
-        {
-            try
-            {
-                var votesUser = dbContext.Votes.Where(v => v.ansId == vote.ansId).Where(v=>v.Id==vote.Id).SingleOrDefault();
-
-                if (votesUser.votes != vote.votes) {
-
-                    votesUser.votes = 0;
-                    dbContext.SaveChanges();
-                }
-                return Ok("votes changed");
-            }
-
-            catch (NullReferenceException e)
-            {
-
-                return BadRequest(e.Message);
-
-            }
-        }
         [HttpPost]
         [Route("api/UploadImage/{id}")]
 
-        public HttpResponseMessage UploadImage(string id)
+        public Object UploadImage(string id)
         {
             string imageName = null;
             var httpRequest = HttpContext.Current.Request;
@@ -307,7 +345,7 @@ namespace Developer_forum.Controllers.api
             postedFile.SaveAs(filePath);
 
             var validUser = dbContext.Users.Where(c => c.Id == id).SingleOrDefault();
-            if(validUser==null)
+            if (validUser == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -315,8 +353,14 @@ namespace Developer_forum.Controllers.api
             {
                 validUser.imageUrl = "Image/" + imageName;
                 dbContext.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.Created);
+                SuccessStatus s = new SuccessStatus();
+                s.status = "Success";
+                s.data = new List<string>() { "Url: "+validUser.imageUrl,
+                                              "Message: image uploaded successfully"};
+                return s;
             }
         }
+
+
     }
 }
