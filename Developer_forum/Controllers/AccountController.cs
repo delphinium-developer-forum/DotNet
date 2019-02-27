@@ -8,9 +8,10 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
-
+using System.Web.Http.Cors;
 namespace Developer_forum.Controllers
 {
+    [EnableCors(origins:"*",headers:"*",methods:"*")]
     public class AccountController : ApiController
     {
         [Route("api/User/Register")]
@@ -34,22 +35,28 @@ namespace Developer_forum.Controllers
 
 
 
-        //[HttpGet]
-        //[Authorize]
-        //[Route("api/GetUserClaims")]
-        //public AccountModel GetUserClaims()
-        //{
-        //    var identityClaims = (ClaimsIdentity)User.Identity;
-        //    IEnumerable<Claim> claims = identityClaims.Claims;
-        //    AccountModel model = new AccountModel()
-        //    {
-        //        UserName = identityClaims.FindFirst("Username").Value,
-        //        Email = identityClaims.FindFirst("Email").Value,
-        //        name = identityClaims.FindFirst("name").Value,
-        //        imageUrl = identityClaims.FindFirst("imageUrl").Value,
-        //        LoggedOn = identityClaims.FindFirst("LoggedOn").Value
-        //    };
-        //    return model;
-        //}
+        [HttpGet]
+        [Authorize]
+        [Route("api/GetUserClaims")]
+        public AccountModel GetUserClaims()
+        {
+            var identityClaims = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identityClaims.Claims;
+            AccountModel model = new AccountModel()
+            {
+                UserName = identityClaims.FindFirst("UserName").Value,
+                Email = identityClaims.FindFirst("Email").Value,
+                name = identityClaims.FindFirst("name").Value,
+           //     imageUrl = identityClaims.FindFirst("imageUrl").Value,
+                LoggedOn = identityClaims.FindFirst("LoggedOn").Value
+            };
+            return model;
+        }
+
+
+
+        
+
+
     }
 }
