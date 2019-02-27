@@ -19,7 +19,8 @@ namespace Developer_forum
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("multipart/form-data"));
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
-            config.EnableCors(new EnableCorsAttribute("*", headers: "*", methods: "*"));
+            //  config.EnableCors(new EnableCorsAttribute("*", headers: "*", methods: "*"));
+            //config.EnableCors();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
