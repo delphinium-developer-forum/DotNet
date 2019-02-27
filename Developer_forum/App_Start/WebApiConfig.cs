@@ -19,12 +19,24 @@ namespace Developer_forum
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("multipart/form-data"));
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
             config.EnableCors(new EnableCorsAttribute("*", headers: "*", methods: "*"));
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //handle all random routes exceptions 
+            //but if format of route is correct and server tries to find controller or action which does not exists 
+            //for that we use ActionSelector and ControllerSelector methods
+            config.Routes.MapHttpRoute(
+                       name: "CatchAllRoute",
+                       routeTemplate: "{*catchall}",
+                       defaults: new { controller = "AllOps", action = "fun", id = RouteParameter.Optional }
+                       );
+         
+
         }
     }
 }

@@ -11,6 +11,8 @@ using System.Data.Entity;
 using System.Security.Claims;
 using System.Web;
 using System.IO;
+using System.Web.Http.Dispatcher;
+using System.Web.Http.Controllers;
 
 namespace Developer_forum.Controllers.api
 {
@@ -142,12 +144,7 @@ namespace Developer_forum.Controllers.api
                 field = "votes",
                 order = "Desc"
             };
-
-
-
-
-
-
+            
             return s;
         }
 
@@ -187,10 +184,7 @@ namespace Developer_forum.Controllers.api
                            votes = v.totalVotes
 
                        });
-
             
-
-
             SuccessStatus s = new SuccessStatus();
             s.status = "success";
             s.data = final;
@@ -362,5 +356,93 @@ namespace Developer_forum.Controllers.api
         }
 
 
+
+
+        [HttpDelete, HttpGet, HttpHead, HttpOptions, HttpPost, HttpPatch, HttpPut]
+        public string fun(string id)
+        {
+            return id;
+            // HttpRequestMessage req;
+        }
+        [HttpDelete, HttpGet, HttpHead, HttpOptions, HttpPost, HttpPatch, HttpPut]
+        public string fun()
+        {
+            return "hi";
+            // HttpRequestMessage req;
+        }
+
+
     }
+
+    /* intially when we provide url inside browser
+     so the request will goes to below method 
+     and try to find called controller 
+     if controller is not available then we got 404 status code 
+     using that code we redirect it to another custom controller
+     
+         */
+         //for controller not found
+    public class HttpNotFoundAwareDefaultHttpControllerSelector : DefaultHttpControllerSelector
+
+    {
+        public HttpNotFoundAwareDefaultHttpControllerSelector(HttpConfiguration configuration)
+
+            : base(configuration)
+
+        {
+        }
+        public override HttpControllerDescriptor SelectController(HttpRequestMessage request)
+        {
+            HttpControllerDescriptor decriptor = null;
+            try
+            { // first uri form browser gets here and tries to find requested controller
+                //if fonud then call it , otherwise we got exception
+                decriptor = base.SelectController(request);
+            }
+            catch (HttpResponseException ex)
+            { //required controlller doed not exists then we change requested route to our error controller and action 
+                var code = ex.Response.StatusCode;
+                if (code != HttpStatusCode.NotFound)
+                    throw;
+                var routeValues = request.GetRouteData().Values;
+                routeValues["controller"] = "AllOps";
+                routeValues["action"] = "fun";
+                routeValues["id"] = "my id";// id is optional
+                decriptor = base.SelectController(request);
+            }
+            return decriptor;
+        }
+    }
+
+
+    //for action not found
+    public class HttpNotFoundAwareControllerActionSelector : ApiControllerActionSelector
+{
+    public HttpNotFoundAwareControllerActionSelector()
+    {
+    }
+ 
+    public override HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
+    {
+        HttpActionDescriptor decriptor = null;
+        try
+        {
+            decriptor = base.SelectAction(controllerContext);
+        }
+        catch (HttpResponseException ex)
+        {
+            var code = ex.Response.StatusCode;
+            if (code != HttpStatusCode.NotFound && code != HttpStatusCode.MethodNotAllowed)
+                throw;
+            var routeData = controllerContext.RouteData;
+            routeData.Values["action"] = "fun";
+            IHttpController httpController = new AllOpsController();
+            controllerContext.Controller = httpController;
+            controllerContext.ControllerDescriptor = new HttpControllerDescriptor(controllerContext.Configuration, "AllOps", httpController.GetType());
+            decriptor = base.SelectAction(controllerContext);
+        }
+        return decriptor;
+    }
+}
+
 }
