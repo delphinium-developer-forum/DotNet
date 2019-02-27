@@ -29,6 +29,9 @@ namespace Developer_forum.Controllers
                 RequiredLength = 3
             };
             IdentityResult result = manager.Create(user, model.Password);
+
+            
+
             return result;
         }
 

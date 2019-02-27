@@ -13,6 +13,9 @@ using System.Web;
 using System.IO;
 using System.Web.Http.Dispatcher;
 using System.Web.Http.Controllers;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace Developer_forum.Controllers.api
 {
@@ -26,6 +29,13 @@ namespace Developer_forum.Controllers.api
         {
             dbContext = new ApplicationDbContext();
         }
+
+
+
+
+
+
+
 
         //Handle Get Request for all questions
         [HttpGet]
@@ -355,7 +365,31 @@ namespace Developer_forum.Controllers.api
             }
         }
 
+        [HttpPut]
+        [Route("api/updateProfile/{id}")]
+        public Object profileUpdate(string id,AccountModel model) {
+            var Existuser = dbContext.Users.Where(u => u.Id == id).Single();
+            if (model.Email != null)
+                Existuser.Email = model.Email;
+            if (model.name != null)
+                Existuser.name = model.name;
+            if (model.PhoneNumber != null)
+                Existuser.PhoneNumber = model.PhoneNumber;
+            if (model.UserName != null)
+                Existuser.UserName = model.UserName;
+            if (model.oldPassword != null && model.newPassword!=null) {
 
+                var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
+                var manager = new UserManager<ApplicationUser>(userStore);
+                
+                var result = manager.ChangePassword(id,model.oldPassword,model.newPassword);
+                
+                
+            }
+
+
+            return DefaultAuthenticationTypes.ApplicationCookie;
+        }
 
 
     }
